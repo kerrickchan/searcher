@@ -1,0 +1,17 @@
+version: "3.8"
+
+name: searcher
+
+services:
+  kafka:
+    extends:
+      file: ./docker/docker-compose-kafka.yml
+      service: kafka
+  
+  kafka-ui:
+    extends:
+      file: ./docker/docker-compose-kafka.yml
+      service: kafka-ui
+
+volumes:
+  kafka_data:
