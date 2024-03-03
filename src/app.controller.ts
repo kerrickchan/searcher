@@ -19,11 +19,12 @@ export class AppController {
   }
 
   @MessagePattern('killDragon')
-  killDragonReply(@Payload() id: number) {
+  killDragonReply(@Payload() payload) {
+    const { id } = payload;
     const items = [
       { id: 1, name: 'Mythical Sword' },
       { id: 2, name: 'Key to Dungeon' },
-      { id, name: 'Dragon Claw' },
+      { id: Number.parseInt(id), name: 'Dragon Claw' },
     ];
 
     return items;
