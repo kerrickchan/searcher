@@ -1,12 +1,36 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    @Inject('HERO_SERVICE')
+    private readonly client: ClientKafka,
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('heroes/:id/dragon')
+  killDragon(@Param() id: number) {
+    return this.client.send<number>('killDragon', id);
+  }
+
+  async onModuleInit() {
+    this.client.subscribeToResponseOf('killDragon');
+    await this.client.connect();
+  }
+
+  @MessagePattern('killDragon')
+  killDragonReply(@Payload() id: number) {
+    const items = [
+      { id: 1, name: 'Mythical Sword' },
+      { id: 2, name: 'Key to Dungeon' },
+      { id, name: 'Dragon Claw' },
+    ];
+
+    return items;
+  }
+
+  @MessagePattern('killDragon.reply')
+  killDragonReply2(@Payload() items: string[]) {
+    console.log('killDragonReply', items);
   }
 }
