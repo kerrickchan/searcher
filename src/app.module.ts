@@ -1,26 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { LlmModule } from './llm/llm.module';
+import { KafkaModule } from './kafka/kafka.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'HERO_SERVICE',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            brokers: ['localhost:9092'],
-          },
-          consumer: {
-            groupId: 'hero-consumer',
-          },
-        },
-      },
-    ]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    KafkaModule,
+    LlmModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

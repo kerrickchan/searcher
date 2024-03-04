@@ -1,37 +1,25 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
-import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { CreateEmbeddingDto } from './llm/dto/create-embedding.dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  constructor(
-    @Inject('HERO_SERVICE')
-    private readonly client: ClientKafka,
-  ) {}
+  @Inject('LLM_SERVICE')
+  private readonly client: ClientKafka;
 
-  @Get('heroes/:id/dragon')
-  killDragon(@Param() id: number) {
-    return this.client.send<number>('killDragon', id);
+  @Get()
+  getHello(): string {
+    return 'Hello World!';
   }
 
-  async onModuleInit() {
-    this.client.subscribeToResponseOf('killDragon');
-    await this.client.connect();
-  }
-
-  @MessagePattern('killDragon')
-  killDragonReply(@Payload() payload) {
-    const { id } = payload;
-    const items = [
-      { id: 1, name: 'Mythical Sword' },
-      { id: 2, name: 'Key to Dungeon' },
-      { id: Number.parseInt(id), name: 'Dragon Claw' },
-    ];
-
-    return items;
-  }
-
-  @MessagePattern('killDragon.reply')
-  killDragonReply2(@Payload() items: string[]) {
-    console.log('killDragonReply', items);
+  @ApiTags('llm')
+  @ApiBody({ type: CreateEmbeddingDto })
+  @Post('create_embedding')
+  createEmbeeding(@Body() createEmbeddingDto: CreateEmbeddingDto) {
+    return this.client.emit<string>(
+      'create_embedding',
+      createEmbeddingDto.text,
+    );
   }
 }
