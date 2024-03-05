@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-searcher}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-searcher}
+      POSTGRES_DB: ${DB_DATABASE:-searcher}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-searcher}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgvector_data:

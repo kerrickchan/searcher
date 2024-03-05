@@ -13,5 +13,11 @@ services:
       file: ./docker/docker-compose-kafka.yml
       service: kafka-ui
 
+  pgvector:
+    extends:
+      file: ./docker/docker-compose-pgvector.yml
+      service: pgvector
+
 volumes:
   kafka_data:
+  pgvector_data:
