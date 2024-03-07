@@ -12,8 +12,9 @@ services:
       - "5432:5432"
     volumes:
       - pgvector_data:/var/lib/postgresql/data
+      - ./init-vector-extension.sql:/docker-entrypoint-initdb.d/init-vector-extension.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-searcher}"]
+      test: ["CMD-SHELL", "pg_isready -U $$DB_USERNAME"]
       interval: 5s
       timeout: 5s
       retries: 5
