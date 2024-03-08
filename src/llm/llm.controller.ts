@@ -8,7 +8,9 @@ export class LlmController {
   private readonly llmService: LlmService;
 
   @EventPattern('create_embedding')
-  async handleUserCreated(text: string): Promise<number[]> {
-    return this.llmService.createEmbeeding(text);
+  async PostTextToCreateEmbedding(text: string): Promise<number[]> {
+    const vectors = await this.llmService.createEmbeeding(text);
+
+    return vectors;
   }
 }

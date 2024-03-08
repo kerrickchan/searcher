@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { DbModule } from '../db/db.module';
 import { KafkaModule } from '../kafka/kafka.module';
 import { LlmController } from './llm.controller';
 import { LlmService } from './llm.service';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule, KafkaModule],
+  imports: [ConfigModule, DbModule, KafkaModule],
   controllers: [LlmController],
   providers: [LlmService],
 })

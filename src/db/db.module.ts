@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DbService } from './db.service';
+import { dataSourceFactory } from './db.source';
+import * as entities from './entities';
 
 @Module({
   imports: [
@@ -15,11 +17,14 @@ import { DbService } from './db.service';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [],
+        entities,
         synchronize: true,
+        autoLoadEntities: true,
       }),
+      dataSourceFactory,
     }),
   ],
   providers: [DbService],
+  exports: [DbService],
 })
 export class DbModule {}
