@@ -12,15 +12,6 @@ export class LlmController {
 
   @EventPattern('llm.create_embedding')
   async PostTextToCreateEmbedding(content: string): Promise<void> {
-    console.log('content', content);
-    await this.llmService.saveVector('content', content);
-    // const vectors = await this.llmService.createEmbeeding(content);
-    // console.log('vectors', vectors);
-
-    // const promptEntity = new PromptEntity();
-    // promptEntity.content = content;
-    // promptEntity.content_embedding = vectors;
-    // console.log('promptEntity', promptEntity);
-    // await this.promptEntityRepo.createPrompt(promptEntity);
+    return this.llmService.saveVector('content', content);
   }
 }
