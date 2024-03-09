@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   Ollama,
   Document,
@@ -9,9 +9,8 @@ import {
 
 @Injectable()
 export class LlmService {
-  private readonly llm: Ollama = new Ollama({
-    model: process.env.LLM_MODEL,
-  });
+  @Inject('LLM_SERVICE_CONTEXT')
+  private readonly llm: Ollama;
 
   async createEmbeeding(text: string): Promise<number[]> {
     return this.llm.getTextEmbedding(text);

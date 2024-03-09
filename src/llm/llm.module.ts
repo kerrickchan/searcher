@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from 'src/entities';
 import { DbModule } from '../db/db.module';
 import { KafkaModule } from '../kafka/kafka.module';
 import { LlmController } from './llm.controller';
 import { LlmService } from './llm.service';
+import { Ollama } from 'llamaindex';
 
 @Module({
   imports: [
@@ -15,6 +16,17 @@ import { LlmService } from './llm.service';
     KafkaModule,
   ],
   controllers: [LlmController],
-  providers: [LlmService],
+  providers: [
+    {
+      provide: 'LLM_SERVICE_CONTEXT',
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return new Ollama({
+          model: config.get('LLM_MODEL'),
+        });
+      },
+    },
+    LlmService,
+  ],
 })
 export class LlmModule {}

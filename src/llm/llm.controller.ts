@@ -1,7 +1,6 @@
 import { Controller, Inject } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { PromptEntityRepository } from 'src/db/repositories/prompty-entity.repository';
-import { PromptEntity } from '../entities';
 import { LlmService } from './llm.service';
 
 @Controller()
