@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { CreateEmbeddingDto } from './llm/dto/create-embedding.dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { CreateEmbeddingDto } from './llm/dto/create-embedding.dto';
 
-@Controller()
+@Controller('llm')
 export class AppController {
   @Inject('LLM_SERVICE')
   private readonly client: ClientKafka;
@@ -18,7 +18,7 @@ export class AppController {
   @Post('create_embedding')
   createEmbeeding(@Body() createEmbeddingDto: CreateEmbeddingDto) {
     return this.client.emit<string>(
-      'create_embedding',
+      'llm.create_embedding',
       createEmbeddingDto.text,
     );
   }

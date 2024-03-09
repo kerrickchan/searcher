@@ -12,7 +12,9 @@ export class PromptEntity {
   @PrimaryColumn()
   id: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   prompt: string;
 
   @Column()
@@ -20,6 +22,7 @@ export class PromptEntity {
 
   @Column({
     type: 'vector' as ColumnType,
+    length: 8000,
   })
   content_embedding: number[];
 
