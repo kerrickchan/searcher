@@ -4,6 +4,7 @@ import {
   Document,
   VectorStoreIndex,
   QdrantVectorStore,
+  serviceContextFromDefaults,
 } from 'llamaindex';
 
 @Injectable()
@@ -20,9 +21,16 @@ export class LlmService {
     const vectorStore = new QdrantVectorStore({
       url: 'http://localhost:6333',
     });
+
+    const serviceContext = serviceContextFromDefaults({
+      embedModel: this.llm, // prevent 'Set OpenAI Key in OPENAI_API_KEY env variable' error
+      llm: this.llm,
+    });
+
     const document = new Document({ text, id_: id });
     const index = await VectorStoreIndex.fromDocuments([document], {
       vectorStore,
+      serviceContext,
     });
 
     const queryEngine = index.asQueryEngine();
