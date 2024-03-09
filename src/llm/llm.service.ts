@@ -9,18 +9,17 @@ import {
 
 @Injectable()
 export class LlmService {
-  @Inject('LLM_SERVICE_CONTEXT')
+  @Inject('LLM_MODEL')
   private readonly llm: Ollama;
+
+  @Inject('VECTOR_STORE')
+  private readonly vectorStore: QdrantVectorStore;
 
   async createEmbeeding(text: string): Promise<number[]> {
     return this.llm.getTextEmbedding(text);
   }
 
   async saveVector(id: string, text: string): Promise<void> {
-    const vectorStore = new QdrantVectorStore({
-      url: 'http://localhost:6333',
-    });
-
     const serviceContext = serviceContextFromDefaults({
       embedModel: this.llm, // prevent 'Set OpenAI Key in OPENAI_API_KEY env variable' error
       llm: this.llm,
@@ -28,7 +27,7 @@ export class LlmService {
 
     const document = new Document({ text, id_: id });
     const index = await VectorStoreIndex.fromDocuments([document], {
-      vectorStore,
+      vectorStore: this.vectorStore,
       serviceContext,
     });
 

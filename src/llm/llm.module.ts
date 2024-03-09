@@ -6,7 +6,7 @@ import { DbModule } from '../db/db.module';
 import { KafkaModule } from '../kafka/kafka.module';
 import { LlmController } from './llm.controller';
 import { LlmService } from './llm.service';
-import { Ollama } from 'llamaindex';
+import { Ollama, QdrantVectorStore } from 'llamaindex';
 
 @Module({
   imports: [
@@ -18,11 +18,20 @@ import { Ollama } from 'llamaindex';
   controllers: [LlmController],
   providers: [
     {
-      provide: 'LLM_SERVICE_CONTEXT',
+      provide: 'LLM_MODEL',
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return new Ollama({
           model: config.get('LLM_MODEL'),
+        });
+      },
+    },
+    {
+      provide: 'VECTOR_STORE',
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return new QdrantVectorStore({
+          url: config.get('VECTOR_STORE_URL'),
         });
       },
     },
