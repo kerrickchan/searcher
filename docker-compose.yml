@@ -13,11 +13,6 @@ services:
       file: ./docker/docker-compose-kafka.yml
       service: kafka-ui
 
-  pgvector:
-    extends:
-      file: ./docker/docker-compose-pgvector.yml
-      service: pgvector
-
   qdrant:
     extends:
       file: ./docker/docker-compose-qdrant.yml
