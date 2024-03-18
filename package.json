@@ -29,8 +29,9 @@
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/typeorm": "^10.0.2",
     "kafkajs": "^2.2.4",
-    "llamaindex": "^0.1.19",
+    "llamaindex": "^0.0.0-20240314032004",
     "pg": "^8.11.3",
+    "pgvector": "^0.1.8",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20"

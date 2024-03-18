@@ -3,17 +3,14 @@ import {
   Ollama,
   Document,
   VectorStoreIndex,
-  QdrantVectorStore,
   serviceContextFromDefaults,
+  PGVectorStore,
 } from 'llamaindex';
 
 @Injectable()
 export class LlmService {
   @Inject('LLM_MODEL')
   private readonly llm: Ollama;
-
-  @Inject('VECTOR_STORE')
-  private readonly vectorStore: QdrantVectorStore;
 
   async createEmbeeding(text: string): Promise<number[]> {
     return this.llm.getTextEmbedding(text);
@@ -25,9 +22,16 @@ export class LlmService {
       llm: this.llm,
     });
 
+    const vectorStore = new PGVectorStore({
+      connectionString: process.env.VECTOR_STORE_CONNECTION_STRING,
+    });
+
+    const client = await vectorStore.client();
+    client.connect();
+
     const document = new Document({ text, id_: id });
     const index = await VectorStoreIndex.fromDocuments([document], {
-      vectorStore: this.vectorStore,
+      vectorStore,
       serviceContext,
     });
 

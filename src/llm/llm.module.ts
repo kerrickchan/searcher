@@ -1,20 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from 'src/entities';
-import { DbModule } from '../db/db.module';
 import { KafkaModule } from '../kafka/kafka.module';
 import { LlmController } from './llm.controller';
 import { LlmService } from './llm.service';
-import { Ollama, QdrantVectorStore } from 'llamaindex';
+import { Ollama, PGVectorStore } from 'llamaindex';
 
 @Module({
-  imports: [
-    ConfigModule,
-    TypeOrmModule.forFeature(entities),
-    DbModule,
-    KafkaModule,
-  ],
+  imports: [ConfigModule, KafkaModule],
   controllers: [LlmController],
   providers: [
     {
@@ -30,8 +22,10 @@ import { Ollama, QdrantVectorStore } from 'llamaindex';
       provide: 'VECTOR_STORE',
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        return new QdrantVectorStore({
-          url: config.get('VECTOR_STORE_URL'),
+        return new PGVectorStore({
+          connectionString: config.get('VECTOR_STORE_CONNECTION_STRING'),
+          schemaName: 'public',
+          tableName: config.get('VECTOR_STORE_TABLE_NAME'),
         });
       },
     },
